@@ -1,20 +1,34 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+##🚀 Key Features
+#👨‍⚕️ Patient Module
 
-# Run and deploy your AI Studio app
+Secure patient registration and login
 
-This contains everything you need to run your app locally.
+Book doctor appointments
 
-View your app in AI Studio: https://ai.studio/apps/drive/1IsX5VQw1DlfQb37g_N9qTrZ-s91dmUm3
+Request hospital resources (beds, oxygen, ICU, etc.)
 
-## Run Locally
+AI Health Assistant for general wellness queries
 
-**Prerequisites:**  Node.js
+View appointment history
 
+#🏢 Admin Module
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Admin-only dashboard access
+
+Add / edit / delete doctors
+
+Manage appointment requests
+
+Approve or cancel resource requests
+
+Track resource availability
+
+Role-based system (Admin & Patient)
+
+#🤖 AI Health Assistant
+
+Powered by Google Gemini API
+
+Answers general health & wellness questions
+
+Displays medical disclaimer for safety
