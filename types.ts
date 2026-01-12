@@ -38,9 +38,29 @@ export interface Appointment {
   notes?: string;
 }
 
+export interface HospitalResource {
+  id: string;
+  name: string;
+  type: string;
+  price: number;
+  totalStock: number;
+}
+
+export interface ResourceRequest {
+  id: string;
+  patientId: string;
+  patientName: string;
+  type: string; // Changed from literal union to string to support dynamic resources
+  price: number;
+  date: string;
+  status: 'pending' | 'paid' | 'cancelled';
+}
+
 export interface AppState {
   currentUser: User | null;
   users: User[];
   doctors: Doctor[];
   appointments: Appointment[];
+  resourceRequests: ResourceRequest[];
+  hospitalResources: HospitalResource[];
 }

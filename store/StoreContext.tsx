@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, Doctor, Appointment, Role } from '../types';
+import { User, Doctor, Appointment, Role, ResourceRequest, HospitalResource } from '../types';
 
 // --- Initial Mock Data ---
 const MOCK_DOCTORS: Doctor[] = [
@@ -106,6 +106,12 @@ const MOCK_DOCTORS: Doctor[] = [
   }
 ];
 
+const MOCK_RESOURCES: HospitalResource[] = [
+  { id: 'r1', name: 'ICU Bed', type: 'Bed', price: 5000, totalStock: 10 },
+  { id: 'r2', name: 'General Bed', type: 'Bed', price: 1500, totalStock: 40 },
+  { id: 'r3', name: 'Oxygen Cylinder', type: 'Oxygen', price: 800, totalStock: 100 },
+];
+
 const MOCK_ADMIN: User = {
   id: 'admin1',
   name: 'Super Admin',
@@ -135,6 +141,16 @@ interface StoreContextType {
   cancelAppointment: (id: string) => void;
   deleteAppointment: (id: string) => void;
   approveAppointment: (id: string) => void;
+
+  resourceRequests: ResourceRequest[];
+  bookResource: (request: Omit<ResourceRequest, 'id' | 'status'>) => void;
+  markResourceAsPaid: (id: string) => void;
+  cancelResourceRequest: (id: string) => void;
+
+  hospitalResources: HospitalResource[];
+  addHospitalResource: (res: Omit<HospitalResource, 'id'>) => void;
+  updateHospitalResource: (res: HospitalResource) => void;
+  deleteHospitalResource: (id: string) => void;
   
   allUsers: User[]; // For admin to view patients
 }
@@ -163,11 +179,23 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [resourceRequests, setResourceRequests] = useState<ResourceRequest[]>(() => {
+    const saved = localStorage.getItem('resourceRequests');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [hospitalResources, setHospitalResources] = useState<HospitalResource[]>(() => {
+    const saved = localStorage.getItem('hospitalResources');
+    return saved ? JSON.parse(saved) : MOCK_RESOURCES;
+  });
+
   // Persistence Effects
   useEffect(() => localStorage.setItem('currentUser', JSON.stringify(currentUser)), [currentUser]);
   useEffect(() => localStorage.setItem('users', JSON.stringify(users)), [users]);
   useEffect(() => localStorage.setItem('doctors', JSON.stringify(doctors)), [doctors]);
   useEffect(() => localStorage.setItem('appointments', JSON.stringify(appointments)), [appointments]);
+  useEffect(() => localStorage.setItem('resourceRequests', JSON.stringify(resourceRequests)), [resourceRequests]);
+  useEffect(() => localStorage.setItem('hospitalResources', JSON.stringify(hospitalResources)), [hospitalResources]);
 
   // Auth Actions
   const login = (email: string, pass: string) => {
@@ -206,10 +234,8 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     logout();
   };
 
-  // Admin action to delete any user
   const deleteUser = (id: string) => {
     setUsers(prev => prev.filter(u => u.id !== id));
-    // Cancel appointments for this user
     setAppointments(prev => prev.map(a => a.patientId === id ? { ...a, status: 'cancelled' } : a));
   };
 
@@ -249,6 +275,38 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setAppointments(prev => prev.map(a => a.id === id ? { ...a, status: 'upcoming' } : a));
   };
 
+  // Resource Requests Actions
+  const bookResource = (request: Omit<ResourceRequest, 'id' | 'status'>) => {
+    const newRequest: ResourceRequest = {
+      ...request,
+      id: Math.random().toString(36).substr(2, 9),
+      status: 'pending'
+    };
+    setResourceRequests(prev => [...prev, newRequest]);
+  };
+
+  const markResourceAsPaid = (id: string) => {
+    setResourceRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'paid' } : r));
+  };
+
+  const cancelResourceRequest = (id: string) => {
+    setResourceRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'cancelled' } : r));
+  };
+
+  // Hospital Resource Inventory Actions
+  const addHospitalResource = (res: Omit<HospitalResource, 'id'>) => {
+    const newRes = { ...res, id: Math.random().toString(36).substr(2, 9) };
+    setHospitalResources(prev => [...prev, newRes]);
+  };
+
+  const updateHospitalResource = (res: HospitalResource) => {
+    setHospitalResources(prev => prev.map(r => r.id === res.id ? res : r));
+  };
+
+  const deleteHospitalResource = (id: string) => {
+    setHospitalResources(prev => prev.filter(r => r.id !== id));
+  };
+
   return (
     <StoreContext.Provider value={{
       currentUser,
@@ -267,6 +325,14 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       cancelAppointment,
       deleteAppointment,
       approveAppointment,
+      resourceRequests,
+      bookResource,
+      markResourceAsPaid,
+      cancelResourceRequest,
+      hospitalResources,
+      addHospitalResource,
+      updateHospitalResource,
+      deleteHospitalResource,
       allUsers: users
     }}>
       {children}
