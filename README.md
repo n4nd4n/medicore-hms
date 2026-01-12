@@ -1,5 +1,6 @@
-##🚀 Key Features
-#👨‍⚕️ Patient Module
+<h1>🚀 Key Features</h1>
+
+<h3>👨‍⚕️ Patient Module</h3>
 
 Secure patient registration and login
 
@@ -11,7 +12,7 @@ AI Health Assistant for general wellness queries
 
 View appointment history
 
-#🏢 Admin Module
+<h3>🏢 Admin Module</h3>
 
 Admin-only dashboard access
 
@@ -25,7 +26,7 @@ Track resource availability
 
 Role-based system (Admin & Patient)
 
-#🤖 AI Health Assistant
+<h3>🤖 AI Health Assistant</h3>
 
 Powered by Google Gemini API
 
