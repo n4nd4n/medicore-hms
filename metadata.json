@@ -1,0 +1,5 @@
+{
+  "name": "MediCore HMS",
+  "description": "A comprehensive Hospital Management System featuring role-based access for Admins and Patients, AI-powered assistance, and real-time appointment scheduling.",
+  "requestFramePermissions": []
+}
